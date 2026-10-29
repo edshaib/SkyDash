@@ -1,0 +1,11 @@
+.gradle/
+build/
+run/
+*.local.json
+
+# Local credentials and request-budget state
+skydash.json
+skydash.json.tmp
+skydash-request-budget.txt
+skydash-request-budget.txt.tmp
+BUILD-LOG.txt

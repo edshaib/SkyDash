@@ -1,0 +1,16 @@
+{
+  "apiKey": "",
+  "proxyUrl": "",
+  "profileId": "",
+  "profileRefreshSeconds": 180,
+  "publicRefreshSeconds": 60,
+  "goalSkill": "SKILL_FARMING",
+  "goalLevel": 25,
+  "goalXp": 0,
+  "goalDate": "",
+  "lookup": "WHEAT",
+  "priceAlerts": {},
+  "timers": {},
+  "sackCounts": {},
+  "modules": {}
+}

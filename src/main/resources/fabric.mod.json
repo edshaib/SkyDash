@@ -1,0 +1,1 @@
+{"schemaVersion":1,"id":"skydash","version":"${version}","name":"SkyDash","description":"Your own SkyBlock progress in one dashboard.","environment":"client","entrypoints":{"client":["dev.skydash.SkyDash"],"modmenu":["dev.skydash.ui.ModMenuEntry"]},"depends":{"fabricloader":">=0.20.1","minecraft":"26.1.2","java":">=25","fabric-api":"*"},"suggests":{"modmenu":"*"}}
