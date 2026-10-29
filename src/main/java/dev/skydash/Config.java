@@ -3,7 +3,7 @@ import com.google.gson.*;
 import java.nio.file.*;
 import java.util.*;
 public final class Config {
-    public String apiKey="", proxyUrl="", profileId="";
+    public String backendUrl="", profileId="";
     public int profileRefreshSeconds=180, publicRefreshSeconds=60;
     public Map<String,ModuleConfig> modules=new LinkedHashMap<>();
     public Map<String,Double> priceAlerts=new HashMap<>();
@@ -35,8 +35,7 @@ public final class Config {
         }
     }
     private Config normalize() {
-        if(apiKey==null)apiKey="";
-        if(proxyUrl==null)proxyUrl="";
+        if(backendUrl==null)backendUrl="";
         if(profileId==null)profileId="";
         if(modules==null)modules=new LinkedHashMap<>();
         modules.entrySet().removeIf(e->e.getValue()==null);

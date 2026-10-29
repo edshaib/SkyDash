@@ -1,30 +1,15 @@
-# SkyDash — developer application
+# SkyDash — API application proposal
 
-SkyDash is a client-only Fabric dashboard for a signed-in player's own Hypixel SkyBlock progress. It presents Garden, skills, Museum, collections and Bingo alongside public market/news data and local session observations. It does not perform gameplay actions, inspect arbitrary player accounts or require a server mod.
+SkyDash is an independent client-side Fabric dashboard for a player's own Hypixel SkyBlock progress. It is not affiliated with or endorsed by Hypixel. It provides customizable progress views, market information, timers and local session observations. Project: https://github.com/edshaib/SkyDash
 
-The account UUID comes from the local Minecraft session. Profile discovery checks that this UUID is a member of the selected profile. Skills, collections and Museum views select that member only. API credentials are supplied privately through local configuration, never embedded in the distribution, displayed in-game, logged, sent in query strings, or sent with public requests. An optional HTTPS proxy base may supply upstream credentials; local keys are never forwarded to it. All requests identify `User-Agent: SkyDash/0.1.0`.
+The public client does not accept players' Hypixel API keys, embed an application key, or send authenticated requests directly to Hypixel. The client currently runs public-data and local features; its optional profile-service integration has no deployed backend yet.
 
-Authenticated endpoints:
+I am requesting review of a planned SkyDash-only backend integration. Before deployment, this backend will authenticate each player's account, restrict access to their own profiles, keep the registered application's key server-side, cache responses and enforce a shared application-wide request limit. The backend and account-verification flow are still to be implemented; this application does not claim they already exist.
 
-- `GET /v2/skyblock/profiles?uuid=<self>` — discover/validate own selected profile and seed the shared profile cache.
-- `GET /v2/skyblock/profile?profile=<validated-own-profile>` — one shared response for skills, collections and other profile consumers.
-- `GET /v2/skyblock/garden?profile=<validated-own-profile>` — own profile Garden.
-- `GET /v2/skyblock/museum?profile=<validated-own-profile>` — own member's donations.
-- `GET /v2/skyblock/bingo?uuid=<self>` — own event progress.
+Proposed authenticated endpoints: `/v2/skyblock/profiles`, `/v2/skyblock/profile`, `/v2/skyblock/garden`, `/v2/skyblock/museum`, and `/v2/skyblock/bingo`. The client requests profile snapshots only on dashboard opening or explicit Refresh actions. Shared profile data is cached for 120–300 seconds. There is no recurring private polling, remote session-gain detection or historical player tracking. XP rates and session gains use local observations.
 
-Public endpoints (no API key header):
+The planned backend budget is at most three authenticated upstream requests per rolling five minutes across the application, including failures, with no increased limit requested. It will honor rate-limit reset headers and stop authenticated retries after authorization failures. The client already enforces an additional three-request local budget, persistent across restarts, and a 30-second cooldown for dashboard refresh actions; this does not replace the required backend-wide limit.
 
-- `GET /v2/skyblock/bazaar`
-- `GET /v2/skyblock/firesales`
-- `GET /v2/skyblock/news`
-- `GET /v2/resources/skyblock/items`
-- `GET /v2/resources/skyblock/collections`
-- `GET /v2/resources/skyblock/election`
-- `GET /v2/resources/skyblock/skills` — public level XP thresholds.
-- `GET /v2/resources/skyblock/bingo` — event goal names and requirements.
+Public Bazaar, fire sales, news, item, collection, election, skill and Bingo resource endpoints are fetched without a key and cached using response cache headers. SkyDash does not automate gameplay, identify nicked players, track unrelated accounts, offer gambling or provide an API proxy for other developers. No monetization is proposed in this application.
 
-One shared API client owns all HTTP traffic and cached responses. Polling only runs on Hypixel SkyBlock. Requests run on a background worker and fail softly.
-
-**Budget: at most 3 authenticated request starts in any rolling 5 minutes per local account/instance.** A capacity-3 token bucket refills one token per 100 seconds; an additional rolling 300-second guard prevents burst/refill overlap. Request timestamps are persisted before dispatch, so a restart cannot immediately reset the budget. All authenticated endpoint types, failures, manual requests and proxy calls share this budget. Multiple simultaneous processes are outside this local coordination scope; an upstream proxy should additionally enforce an account-wide budget.
-
-Profile cache TTL is configurable from **120 to 300 seconds**, default **180**. Garden and Museum are separate Hypixel endpoints and do not come in the shared profile response. Private endpoints rotate under the single budget; exhausted budget retains cached data and displays its age. Manual refresh is limited to once per **30 seconds** and does not bypass the budget. Public endpoints honor `Cache-Control: max-age` and `Age`, with a default 60-second fallback, and send no key. HTTP 429 honors `RateLimit-Reset`; authenticated 401/403 stops retrying until credentials change. No real key is included in fixtures or build artifacts.
+Please confirm that this proposed access pattern is acceptable before the authenticated backend is deployed.

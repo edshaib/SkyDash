@@ -35,14 +35,8 @@ public final class SettingsScreen extends Screen {
         var c=mod.config;
         int y=55;
         if(page==0) {
-            field("Profile refresh (120-300s)",""+c.profileTtl(),y,v->c.profileRefreshSeconds=Math.clamp(Integer.parseInt(v),120,300));
+            field("Profile cache (120-300s)",""+c.profileTtl(),y,v->c.profileRefreshSeconds=Math.clamp(Integer.parseInt(v),120,300));
             field("Public fallback (30-3600s)",""+c.publicTtl(),y+26,v->c.publicRefreshSeconds=Math.clamp(Integer.parseInt(v),30,3600));
-            field("HTTPS backend base URL",c.proxyUrl,y+52,v-> {
-                if(!v.isEmpty()) {
-                    var u=java.net.URI.create(v); if(!"https".equals(u.getScheme())||u.getHost()==null||u.getQuery()!=null||u.getUserInfo()!=null)throw new IllegalArgumentException();
-                }
-                c.proxyUrl=v;
-            });
             field("Own profile UUID (optional)",c.profileId,y+78,v-> {
                 if(!v.isEmpty()&&!v.matches("[a-fA-F0-9-]{32,36}"))throw new IllegalArgumentException(); c.profileId=v;
             });
@@ -93,7 +87,7 @@ public final class SettingsScreen extends Screen {
     @Override public void extractRenderState(GuiGraphicsExtractor g,int mx,int my,float dt) {
         g.fill(0,0,width,height,0xF00B111C);
         g.text(font,"SkyDash settings / "+(page+1)+" of 3",10,12,0xFF55DCC2);
-        g.text(font,"API key: edit config/skydash.json; never shown here",10,30,0xFF9FAEBE);
+        g.text(font,"Customize your dashboard, goals, and alerts",10,30,0xFF9FAEBE);
         for(int i=0; i<labels.size(); i++)g.text(font,font.plainSubstrByWidth(labels.get(i),width/2-18),10,61+i*26,0xFFE0E8EF);
         g.text(font,message,10,height-45,0xFFFFA477);
         super.extractRenderState(g,mx,my,dt);

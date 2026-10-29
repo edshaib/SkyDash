@@ -13,6 +13,9 @@ public final class DashboardScreen extends Screen {
         super(Component.literal("SkyDash"));
         this.parent=parent;
     }
+    @Override public void added() {
+        if (mod.context.session.active()) mod.api.requestProfile(mod.config);
+    }
     private void button(String label,int x,int y,int w,Runnable action) {
         addRenderableWidget(Button.builder(Component.literal(label),b->action.run()).bounds(x,y,w,20).build());
     }

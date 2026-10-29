@@ -6,18 +6,10 @@ import dev.skydash.module.timers.TimersModule;
 import java.util.*;
 import java.time.*;
 public final class SkillsModule extends BaseModule {
-    private final Map<String,Double> baseline=new HashMap<>();
-    private long baselineTime;
-    private String profile="";
     public SkillsModule(DashboardContext c) {
         super(c,"skills","Skills & XP");
     }
     public void tick() {
-        if(!profile.equals(ctx.api.ownProfileId())) {
-            profile=ctx.api.ownProfileId();
-            baseline.clear();
-            baselineTime=0;
-        }
         var opt=ctx.api.ownProfile();
         if(opt.isEmpty()) {
             lines("unavailable: own profile pending",ctx.api.status());
@@ -26,16 +18,9 @@ public final class SkillsModule extends BaseModule {
         var p=opt.get();
         var out=new ArrayList<String>();
         out.add(ctx.api.age("skyblock/profile"));
-        var cached=ctx.api.cached("skyblock/profile");
-        long sample=cached.updated().toEpochMilli();
-        if(baselineTime==0) {
-            baselineTime=sample;
-            baseline.putAll(p.skills());
-        }
         for(var e:p.skills().entrySet()) {
             String skill=e.getKey().replace("SKILL_","");
-            double elapsed=(sample-baselineTime)/3600000.0;
-            double rate=elapsed>0?Math.max(0,e.getValue()-baseline.getOrDefault(e.getKey(),e.getValue()))/elapsed:ctx.session.skillXp.getOrDefault(skill,0.0)/ctx.session.hours();
+            double rate=ctx.session.skillXp.getOrDefault(skill,0.0)/ctx.session.hours();
             int level=0;
             double next=0;
             var meta=Json.obj(Json.obj(ctx.data("resources/skyblock/skills"),"skills"),skill);

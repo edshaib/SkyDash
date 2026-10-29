@@ -1,6 +1,5 @@
 {
-  "apiKey": "",
-  "proxyUrl": "",
+  "backendUrl": "",
   "profileId": "",
   "profileRefreshSeconds": 180,
   "publicRefreshSeconds": 60,

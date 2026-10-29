@@ -6,6 +6,6 @@ public final class SettingsModule extends BaseModule {
         super(c,"settings","Configuration");
     }
     public void tick() {
-        lines("Dashboard: toggle and pin each module","HUD layout: drag pinned panels","Profile refresh: "+ctx.config.profileTtl()+"s","Public fallback: "+ctx.config.publicTtl()+"s","Use Settings to edit goals, alerts and timers");
+        lines("Dashboard: toggle and pin each module","HUD layout: drag pinned panels","Profile cache: "+ctx.config.profileTtl()+"s","Public fallback: "+ctx.config.publicTtl()+"s","Use Settings to edit goals, alerts and timers");
     }
 }

@@ -1,5 +1,5 @@
 plugins { id 'net.fabricmc.fabric-loom' version '1.19.3' }
-version = '0.1.0'
+version = '0.1.1'
 group = 'dev.skydash'
 base { archivesName = 'skydash' }
 repositories { maven { url = 'https://maven.terraformersmc.com/releases/' } }
